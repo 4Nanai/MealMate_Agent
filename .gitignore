@@ -1,0 +1,6 @@
+.env
+example.json
+volumes/
+.idea/
+.vscode/
+.DS_Store
