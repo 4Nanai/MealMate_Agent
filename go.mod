@@ -8,12 +8,17 @@ require (
 	github.com/cloudwego/eino-ext/components/embedding/ark v0.1.1
 	github.com/cloudwego/eino-ext/components/indexer/milvus v0.0.0-20251121095553-9c4349cc3e46
 	github.com/cloudwego/eino-ext/components/retriever/milvus v0.0.0-20251121095553-9c4349cc3e46
+	github.com/cloudwego/hertz v0.10.3
 	github.com/joho/godotenv v1.5.1
 	github.com/milvus-io/milvus-sdk-go/v2 v2.4.2
 	github.com/supabase-community/supabase-go v0.0.4
 )
 
 require (
+	github.com/cloudwego/gopkg v0.1.4 // indirect
+	github.com/cloudwego/netpoll v0.7.0 // indirect
+	github.com/fsnotify/fsnotify v1.5.4 // indirect
+	github.com/nyaruka/phonenumbers v1.0.55 // indirect
 	github.com/openai/openai-go v1.10.1 // indirect
 	github.com/tidwall/sjson v1.2.5 // indirect
 )

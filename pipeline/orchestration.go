@@ -3,7 +3,9 @@ package pipeline
 import (
 	"context"
 
+	"github.com/cloudwego/eino-ext/components/embedding/ark"
 	"github.com/cloudwego/eino/compose"
+	"github.com/milvus-io/milvus-sdk-go/v2/client"
 )
 
 type EventAgentState struct {
@@ -16,7 +18,7 @@ type EventAgentState struct {
 * @return r compose.Runnable[string, string], err error
 * @return nil if success, error if failed
  */
-func BuildMealMateAgent(ctx context.Context) (r compose.Runnable[string, string], err error) {
+func BuildMealMateAgent(ctx context.Context, embedder *ark.Embedder, milvusClient *client.Client) (r compose.Runnable[string, string], err error) {
 	const (
 		UserProfileRetriever = "UserProfileRetriever"
 		UserProfileGen       = "UserProfileGen"
@@ -30,13 +32,8 @@ func BuildMealMateAgent(ctx context.Context) (r compose.Runnable[string, string]
 		}
 	}))
 
-	// Use shared embedder and milvus client
-	userProfileRetrieverKeyOfRetriever, err := newRetriever(ctx)
-	if err != nil {
-		return nil, err
-	}
-	// Wrap original retriever to support filter
-	dynamicRetriever := NewDynamicFilterRetriever(userProfileRetrieverKeyOfRetriever)
+	// Create Event Retriever Node
+	dynamicRetriever := NewDynamicFilterRetriever(embedder, milvusClient)
 	_ = g.AddRetrieverNode(UserProfileRetriever, dynamicRetriever)
 	_ = g.AddLambdaNode(UserProfileGen, compose.InvokableLambda(genUserProfile))
 	eventChatTemplateKeyOfChatTemplate, err := newChatTemplate(ctx)

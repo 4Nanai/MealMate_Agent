@@ -13,17 +13,18 @@ var GlobalEmbedder *ark.Embedder
 /**
 * @description: Initialize the embedder
 * @param ctx context.Context
-* @return nil if success, error if failed
+* @return embedder instance and error
  */
-func InitEmbedder(ctx context.Context) {
+func InitEmbedder(ctx context.Context) (*ark.Embedder, error) {
 	embedder, err := ark.NewEmbedder(ctx, &ark.EmbeddingConfig{
 		APIKey: os.Getenv("ARK_API_KEY"),
 		Model:  os.Getenv("ARK_EMBEDDER_MODEL"),
 	})
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	GlobalEmbedder = embedder
+	return embedder, nil
 }
 
 /**

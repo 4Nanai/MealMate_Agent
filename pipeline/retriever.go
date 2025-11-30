@@ -16,29 +16,12 @@ import (
 	"github.com/milvus-io/milvus-sdk-go/v2/entity"
 )
 
-// Shared instances
-var (
-	sharedEmbedder     *ark.Embedder
-	sharedMilvusClient client.Client
-)
-
-/*
-* @description: Set the shared embedder and milvus client instances
-* @param embedder *ark.Embedder
-* @param milvusClient client.Client
-* @return void
- */
-func SetSharedInstances(embedder *ark.Embedder, milvusClient client.Client) {
-	sharedEmbedder = embedder
-	sharedMilvusClient = milvusClient
-}
-
-func newRetriever(ctx context.Context) (*milvus.Retriever, error) {
+func newRetriever(ctx context.Context, embedder *ark.Embedder, milvusClient *client.Client) (*milvus.Retriever, error) {
 	// check if shared embedder and milvus client are initialized
-	if sharedEmbedder == nil {
+	if embedder == nil {
 		panic("embedder not initialized, call SetSharedInstances first")
 	}
-	if sharedMilvusClient == nil {
+	if milvusClient == nil {
 		panic("milvus client not initialized, call SetSharedInstances first")
 	}
 
@@ -47,7 +30,7 @@ func newRetriever(ctx context.Context) (*milvus.Retriever, error) {
 		panic(err)
 	}
 	r, err := milvus.NewRetriever(ctx, &milvus.RetrieverConfig{
-		Client:      sharedMilvusClient,
+		Client:      *milvusClient,
 		Collection:  os.Getenv("MILVUS_EVENT_COLLECTION"),
 		VectorField: "vector",
 		OutputFields: []string{
@@ -57,7 +40,7 @@ func newRetriever(ctx context.Context) (*milvus.Retriever, error) {
 			"user_id",
 		},
 		TopK:      3,
-		Embedding: sharedEmbedder,
+		Embedding: embedder,
 		DocumentConverter: func(ctx context.Context, doc client.SearchResult) ([]*schema.Document, error) {
 			var err error
 			result := make([]*schema.Document, doc.IDs.Len())
@@ -142,7 +125,11 @@ type DynamicFilterRetriever struct {
 	baseRetriever retriever.Retriever
 }
 
-func NewDynamicFilterRetriever(base retriever.Retriever) *DynamicFilterRetriever {
+func NewDynamicFilterRetriever(embedder *ark.Embedder, milvusClient *client.Client) *DynamicFilterRetriever {
+	base, err := newRetriever(context.Background(), embedder, milvusClient)
+	if err != nil {
+		panic(err)
+	}
 	return &DynamicFilterRetriever{
 		baseRetriever: base,
 	}

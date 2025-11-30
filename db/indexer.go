@@ -1,12 +1,14 @@
-package main
+package db
 
 import (
 	"context"
 	"fmt"
 	"os"
 
+	"github.com/cloudwego/eino-ext/components/embedding/ark"
 	"github.com/cloudwego/eino-ext/components/indexer/milvus"
 	"github.com/cloudwego/eino/schema"
+	"github.com/milvus-io/milvus-sdk-go/v2/client"
 	"github.com/milvus-io/milvus-sdk-go/v2/entity"
 )
 
@@ -52,11 +54,11 @@ var eventFields = []*entity.Field{
 	},
 }
 
-func NewEventIndexer(ctx context.Context) *milvus.Indexer {
+func NewEventIndexer(ctx context.Context, milvusClient *client.Client, embedder *ark.Embedder) *milvus.Indexer {
 	indexer, err := milvus.NewIndexer(ctx, &milvus.IndexerConfig{
-		Client:     MilvusCli,
+		Client:     *milvusClient,
 		Collection: os.Getenv("MILVUS_EVENT_COLLECTION"),
-		Embedding:  GlobalEmbedder,
+		Embedding:  embedder,
 		Fields:     eventFields,
 		MetricType: milvus.COSINE,
 		DocumentConverter: func(ctx context.Context, docs []*schema.Document, vectors [][]float64) ([]interface{}, error) {

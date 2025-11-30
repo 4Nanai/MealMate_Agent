@@ -13,9 +13,9 @@ var MilvusCli client.Client
 /**
 * @description: Initialize the milvus client
 * @param ctx context.Context
-* @return nil if success, error if failed
+* @return client instance
  */
-func InitMilvusClient(ctx context.Context) {
+func InitMilvusClient(ctx context.Context) client.Client {
 	newClient, err := client.NewClient(ctx, client.Config{
 		Address: os.Getenv("MILVUS_ADDRESS"),
 		DBName:  os.Getenv("MILVUS_DBNAME"),
@@ -24,6 +24,7 @@ func InitMilvusClient(ctx context.Context) {
 		panic(err)
 	}
 	MilvusCli = newClient
+	return newClient
 }
 
 /**

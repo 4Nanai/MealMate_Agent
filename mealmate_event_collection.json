@@ -1,0 +1,198 @@
+{
+  "virtual_channel_names": [
+    "by-dev-rootcoord-dml_0_462543579595408437v0"
+  ],
+  "physical_channel_names": [
+    "by-dev-rootcoord-dml_0"
+  ],
+  "aliases": [],
+  "start_positions": [],
+  "properties": [
+    {
+      "key": "collection.timezone",
+      "value": "UTC"
+    }
+  ],
+  "status": {
+    "extra_info": {},
+    "error_code": "Success",
+    "reason": "",
+    "code": 0,
+    "retriable": false,
+    "detail": ""
+  },
+  "schema": {
+    "fields": [
+      {
+        "type_params": [
+          {
+            "key": "max_length",
+            "value": "256"
+          },
+          {
+            "key": "enable_analyzer",
+            "value": "false"
+          }
+        ],
+        "index_params": [],
+        "fieldID": "100",
+        "name": "event_id",
+        "is_primary_key": true,
+        "description": "",
+        "data_type": "VarChar",
+        "autoID": false,
+        "state": "FieldCreated",
+        "element_type": "None",
+        "default_value": null,
+        "is_dynamic": false,
+        "is_partition_key": false,
+        "is_clustering_key": false,
+        "nullable": false,
+        "is_function_output": false,
+        "dataType": 21,
+        "max_length": "256",
+        "enable_analyzer": "false"
+      },
+      {
+        "type_params": [
+          {
+            "key": "dim",
+            "value": "2560"
+          },
+          {
+            "key": "enable_analyzer",
+            "value": "false"
+          }
+        ],
+        "index_params": [],
+        "fieldID": "101",
+        "name": "vector",
+        "is_primary_key": false,
+        "description": "",
+        "data_type": "FloatVector",
+        "autoID": false,
+        "state": "FieldCreated",
+        "element_type": "None",
+        "default_value": null,
+        "is_dynamic": false,
+        "is_partition_key": false,
+        "is_clustering_key": false,
+        "nullable": false,
+        "is_function_output": false,
+        "dataType": 101,
+        "dim": "2560",
+        "enable_analyzer": "false"
+      },
+      {
+        "type_params": [
+          {
+            "key": "max_length",
+            "value": "8192"
+          },
+          {
+            "key": "enable_analyzer",
+            "value": "false"
+          }
+        ],
+        "index_params": [],
+        "fieldID": "102",
+        "name": "content",
+        "is_primary_key": false,
+        "description": "",
+        "data_type": "VarChar",
+        "autoID": false,
+        "state": "FieldCreated",
+        "element_type": "None",
+        "default_value": null,
+        "is_dynamic": false,
+        "is_partition_key": false,
+        "is_clustering_key": false,
+        "nullable": false,
+        "is_function_output": false,
+        "dataType": 21,
+        "max_length": "8192",
+        "enable_analyzer": "false"
+      },
+      {
+        "type_params": [
+          {
+            "key": "enable_analyzer",
+            "value": "false"
+          }
+        ],
+        "index_params": [],
+        "fieldID": "103",
+        "name": "meta_data",
+        "is_primary_key": false,
+        "description": "",
+        "data_type": "JSON",
+        "autoID": false,
+        "state": "FieldCreated",
+        "element_type": "None",
+        "default_value": null,
+        "is_dynamic": false,
+        "is_partition_key": false,
+        "is_clustering_key": false,
+        "nullable": false,
+        "is_function_output": false,
+        "dataType": 23,
+        "enable_analyzer": "false"
+      },
+      {
+        "type_params": [
+          {
+            "key": "max_length",
+            "value": "256"
+          },
+          {
+            "key": "enable_analyzer",
+            "value": "false"
+          }
+        ],
+        "index_params": [],
+        "fieldID": "104",
+        "name": "user_id",
+        "is_primary_key": false,
+        "description": "",
+        "data_type": "VarChar",
+        "autoID": false,
+        "state": "FieldCreated",
+        "element_type": "None",
+        "default_value": null,
+        "is_dynamic": false,
+        "is_partition_key": false,
+        "is_clustering_key": false,
+        "nullable": false,
+        "is_function_output": false,
+        "dataType": 21,
+        "max_length": "256",
+        "enable_analyzer": "false"
+      }
+    ],
+    "properties": [
+      {
+        "key": "collection.timezone",
+        "value": "UTC"
+      }
+    ],
+    "functions": [],
+    "struct_array_fields": [],
+    "name": "mealmate_event_collection",
+    "description": "event collection for mealmate",
+    "autoID": false,
+    "enable_dynamic_field": false,
+    "dbName": ""
+  },
+  "collectionID": "462543579595408437",
+  "created_timestamp": "462543633185767429",
+  "created_utc_timestamp": "1764463932746",
+  "shards_num": 1,
+  "consistency_level": "Bounded",
+  "collection_name": "mealmate_event_collection",
+  "db_name": "MealMateEino",
+  "num_partitions": "1",
+  "db_id": "0",
+  "request_time": "0",
+  "update_timestamp": "462543633185767429",
+  "update_timestamp_str": "462543633185767429"
+}
