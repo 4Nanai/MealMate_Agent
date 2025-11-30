@@ -18,3 +18,14 @@ type Event struct {
 type SyncConfig struct {
 	UserID string `json:"user_id" validate:"required"`
 }
+
+type RestaurantRecommendation struct {
+	RestaurantName       string  `json:"restaurant_name"`
+	RecommendationRating float64 `json:"recommendation_rating"`
+	MainDishes           string  `json:"main_dishes"`
+	ShortReason          string  `json:"short_reason"`
+}
+
+type EventAgentResponse struct {
+	Recommendations []RestaurantRecommendation `json:"recommendations"`
+}

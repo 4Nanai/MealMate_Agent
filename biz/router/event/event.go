@@ -7,19 +7,23 @@ import (
 	"mealmate-agent/db"
 	"mealmate-agent/models"
 
+	"github.com/cloudwego/eino/compose"
 	"github.com/cloudwego/hertz/pkg/app"
 	"github.com/cloudwego/hertz/pkg/app/server"
 	"github.com/cloudwego/hertz/pkg/common/hlog"
 	"github.com/cloudwego/hertz/pkg/common/utils"
 )
 
-func Register(h *server.Hertz, milvusDB *db.MilvusDatabase) {
+func Register(h *server.Hertz, milvusDB *db.MilvusDatabase, runnable *compose.Runnable[string, string]) {
 	// Register event-related routes here in the future
-	h.POST("/event", func(ctx context.Context, c *app.RequestContext) {
+	h.POST("/events", func(ctx context.Context, c *app.RequestContext) {
 		EventPostHandler(ctx, c, milvusDB)
 	})
-	h.POST("/event/sync", func(ctx context.Context, c *app.RequestContext) {
+	h.POST("/events/sync", func(ctx context.Context, c *app.RequestContext) {
 		EventSyncHandler(ctx, c, milvusDB)
+	})
+	h.POST("/events/ai", func(ctx context.Context, c *app.RequestContext) {
+		CallEventAgent(ctx, c, runnable)
 	})
 }
 
@@ -85,4 +89,30 @@ func EventSyncHandler(ctx context.Context, c *app.RequestContext, milvusDB *db.M
 	})
 
 	hlog.SystemLogger().Info("Event sync completed for user:", config.UserID, "Count:", count)
+}
+
+func CallEventAgent(ctx context.Context, c *app.RequestContext, runnable *compose.Runnable[string, string]) {
+	// Get raw request body
+	body := c.Request.Body()
+
+	// Validate body length
+	if len(body) == 0 {
+		c.JSON(http.StatusBadRequest, utils.H{
+			"error": "Request body cannot be empty",
+		})
+		return
+	}
+
+	output, err := (*runnable).Invoke(ctx, string(body))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, utils.H{
+			"error":  "Failed to process request",
+			"detail": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, utils.H{
+		"response": output,
+	})
 }

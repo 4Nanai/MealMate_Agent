@@ -4,6 +4,7 @@ import (
 	"context"
 	"mealmate-agent/biz/router"
 	"mealmate-agent/db"
+	"mealmate-agent/pipeline"
 
 	"github.com/cloudwego/hertz/pkg/app/server"
 	"github.com/cloudwego/hertz/pkg/common/hlog"
@@ -34,10 +35,16 @@ func main() {
 	milvusDB.StartAutoSync(ctx)
 	hlog.SystemLogger().Info("Automatic sync task started")
 
+	// Init pipeline
+	runnable, err := pipeline.BuildMealMateAgent(ctx, embedder, &milvusClient)
+	if err != nil {
+		panic(err)
+	}
+
 	// Start Hertz server
 	h := server.Default(server.WithHostPorts("127.0.0.1:8080"))
 
-	router.RegisterRoutes(h, milvusDB)
+	router.RegisterRoutes(h, milvusDB, &runnable)
 
 	h.Spin()
 }
