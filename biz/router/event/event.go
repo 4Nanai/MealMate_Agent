@@ -70,7 +70,7 @@ func EventSyncHandler(ctx context.Context, c *app.RequestContext, milvusDB *db.M
 
 	hlog.SystemLogger().Info("Starting event sync for user:", config.UserID)
 
-	count, err := milvusDB.IndexEventsFromDatabase(ctx, config)
+	count, err := milvusDB.ManuallySyncDatabase(ctx, config)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, utils.H{
 			"error":  "Failed to sync events",

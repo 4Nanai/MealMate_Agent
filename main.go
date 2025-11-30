@@ -30,6 +30,10 @@ func main() {
 	milvusDB := db.NewMilvusDatabase(ctx, &milvusClient, embedder)
 	hlog.SystemLogger().Info("MilvusDatabase initialized")
 
+	// Start automatic sync task
+	milvusDB.StartAutoSync(ctx)
+	hlog.SystemLogger().Info("Automatic sync task started")
+
 	// Start Hertz server
 	h := server.Default(server.WithHostPorts("127.0.0.1:8080"))
 
