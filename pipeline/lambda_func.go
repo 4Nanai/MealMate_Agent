@@ -23,6 +23,5 @@ func genUserProfile(ctx context.Context, input []*schema.Document) (output map[s
 // chatOutputHandler component initialization function of node 'outputFormatHandler' in graph 'MealMateAgent'
 func chatOutputHandler(ctx context.Context, input *schema.Message) (output string, err error) {
 	content := input.Content
-	reasoningContent := input.ReasoningContent
-	return "Response: " + content + "\nReasoning: " + reasoningContent, nil
+	return content, nil
 }
