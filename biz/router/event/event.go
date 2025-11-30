@@ -18,6 +18,9 @@ func Register(h *server.Hertz, milvusDB *db.MilvusDatabase) {
 	h.POST("/event", func(ctx context.Context, c *app.RequestContext) {
 		EventPostHandler(ctx, c, milvusDB)
 	})
+	h.POST("/event/sync", func(ctx context.Context, c *app.RequestContext) {
+		EventSyncHandler(ctx, c, milvusDB)
+	})
 }
 
 func EventPostHandler(ctx context.Context, c *app.RequestContext, milvusDB *db.MilvusDatabase) {
@@ -49,4 +52,37 @@ func EventPostHandler(ctx context.Context, c *app.RequestContext, milvusDB *db.M
 	})
 
 	hlog.SystemLogger().Info("Event indexed successfully:", event)
+}
+
+func EventSyncHandler(ctx context.Context, c *app.RequestContext, milvusDB *db.MilvusDatabase) {
+	var err error
+
+	var config models.SyncConfig
+
+	// Validate and bind the request body to the SyncConfig struct
+	if err = c.BindAndValidate(&config); err != nil {
+		c.JSON(http.StatusBadRequest, utils.H{
+			"error":  "Invalid request body",
+			"detail": err.Error(),
+		})
+		return
+	}
+
+	hlog.SystemLogger().Info("Starting event sync for user:", config.UserID)
+
+	count, err := milvusDB.IndexEventsFromDatabase(ctx, config)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, utils.H{
+			"error":  "Failed to sync events",
+			"detail": err.Error(),
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, utils.H{
+		"message": "Events synced successfully",
+		"count":   count,
+	})
+
+	hlog.SystemLogger().Info("Event sync completed for user:", config.UserID, "Count:", count)
 }

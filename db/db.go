@@ -34,23 +34,23 @@ func NewMilvusDatabase(ctx context.Context, milvusClient *client.Client, embedde
 * @param ctx context.Context
 * @return nil if success, error if failed
  */
-func (db *MilvusDatabase) IndexEventsFromDatabase(ctx context.Context) error {
+func (db *MilvusDatabase) IndexEventsFromDatabase(ctx context.Context, config models.SyncConfig) (int, error) {
 	SupabaseApiUrl := os.Getenv("SUPABASE_API_URL")
 	SupabaseApiKey := os.Getenv("SUPABASE_API_KEY")
 	supabaseClient := NewSupabaseClient(SupabaseApiUrl, SupabaseApiKey)
-	data, _, err := supabaseClient.From("event").Select("*", "", false).Filter("user_id", "eq", "xs90").Execute()
+	data, _, err := supabaseClient.From("event").Select("*", "", false).Filter("user_id", "eq", config.UserID).Execute()
 	if err != nil {
-		return err
+		return 0, err
 	}
 	fmt.Println("result:", string(data))
 
 	var events []models.Event
 	err = json.Unmarshal(data, &events)
 	if err != nil {
-		return err
+		return 0, err
 	}
 	if len(events) < 1 {
-		return fmt.Errorf("no event found")
+		return 0, fmt.Errorf("no event found")
 	}
 
 	if db.Indexer == nil {
@@ -58,9 +58,9 @@ func (db *MilvusDatabase) IndexEventsFromDatabase(ctx context.Context) error {
 	}
 	err = db.SyncEventToMilvus(ctx, &events)
 	if err != nil {
-		return err
+		return 0, err
 	}
-	return nil
+	return len(events), nil
 }
 
 func (db *MilvusDatabase) SyncEventToMilvus(ctx context.Context, events *[]models.Event) error {

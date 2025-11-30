@@ -14,3 +14,7 @@ type Event struct {
 	CreatedAt             string      `json:"created_at"`
 	RestaurantCoordinates Coordinates `json:"restaurant_coordinates"`
 }
+
+type SyncConfig struct {
+	UserID string `json:"user_id" validate:"required"`
+}
